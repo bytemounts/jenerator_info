@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-300 MK3 Jeneratör Monitoring Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --purple-color: #9b59b6;
+            --teal-color: #1abc9c;
+            --dark-color: #34495e;
+            --light-gray: #ecf0f1;
+            --white: #ffffff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --border-radius: 15px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            color: var(--primary-color);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin: 5px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .status-online { background: var(--success-color); color: var(--white); }
+        .status-offline { background: var(--danger-color); color: var(--white); }
+        .status-warning { background: var(--warning-color); color: var(--white); }
+        .status-info { background: var(--info-color); color: var(--white); }
+        
+        /* Controls Section */
+        .controls-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .controls-header h3 {
+            color: var(--primary-color);
+            font-size: 1.6em;
+            margin-bottom: 10px;
+        }
+        
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-start { background: linear-gradient(135deg, var(--success-color), #2ecc71); }
+        .btn-stop { background: linear-gradient(135deg, var(--danger-color), #c0392b); }
+        .btn-auto { background: linear-gradient(135deg, var(--info-color), #2980b9); }
+        .btn-manual { background: linear-gradient(135deg, var(--purple-color), #8e44ad); }
+        .btn-test { background: linear-gradient(135deg, var(--warning-color), #e67e22); }
+        .btn-emergency { 
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            border: 2px solid #922b21;
+        }
+        
+        /* Alarm Panel */
+        .alarm-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .alarm-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+        
+        .alarm-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .alarm-item::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 12px;
+            animation: pulse 2s infinite;
+        }
+        
+        .alarm-ok { 
+            background: linear-gradient(135deg, #d5f4e6, #a8e6cf); 
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        .alarm-ok::before { background: var(--success-color); }
+        
+        .alarm-warning { 
+            background: linear-gradient(135deg, #fef9e7, #fcf3cf); 
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+        .alarm-warning::before { background: var(--warning-color); }
+        
+        .alarm-critical { 
+            background: linear-gradient(135deg, #fadbd8, #f1948a); 
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        .alarm-critical::before { background: var(--danger-color); }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--info-color), var(--purple-color), var(--success-color));
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 2px solid var(--info-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-icon {
+            font-size: 1.5em;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 12px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .metric:hover {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            transform: translateX(5px);
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .metric-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        /* Value Colors */
+        .voltage { color: var(--purple-color); }
+        .current { color: #e67e22; }
+        .power { color: var(--success-color); }
+        .frequency { color: var(--info-color); }
+        .rpm { color: var(--danger-color); }
+        .temperature { color: var(--warning-color); }
+        .fuel { color: var(--teal-color); }
+        .battery { color: var(--dark-color); }
+        
+        /* Progress Bars */
+        .progress-container {
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--light-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.8s ease;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+        
+        .fuel-progress { 
+            background: linear-gradient(135deg, var(--teal-color), #16a085);
+        }
+        .battery-progress { 
+            background: linear-gradient(135deg, var(--dark-color), #2c3e50);
+        }
+        
+        .progress-text {
+            font-size: 0.8em;
+            margin-top: 5px;
+            text-align: center;
+            color: #666;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .footer-item {
+            color: #666;
+        }
+        
+        .footer-value {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .loading::after {
+            content: '⚡';
+            animation: pulse 1.5s infinite;
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: var(--white);
+            font-weight: bold;
+            z-index: 1000;
+            max-width: 350px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: var(--transition);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-success { background: var(--success-color); }
+        .notification-error { background: var(--danger-color); }
+        .notification-warning { background: var(--warning-color); }
+        .notification-info { background: var(--info-color); }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .header-info {
+                flex-direction: column;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .btn {
+                padding: 12px 15px;
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .pulse { animation: pulse 2s infinite; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .card, .header, .controls-section, .alarm-panel, .footer {
+                background: rgba(44, 62, 80, 0.95);
+                color: var(--white);
+            }
+            
+            .metric {
+                background: linear-gradient(135deg, #34495e, #2c3e50);
+                color: var(--white);
+            }
+            
+            .metric-label {
+                color: #bdc3c7;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>⚡ D-300 MK3 Jeneratör Monitoring Dashboard</h1>
+            <div class="header-info">
+                <div id="connection-status">
+                    <span class="status-badge status-offline pulse">🔍 Bağlantı Kontrol Ediliyor...</span>
+                </div>
+                <div class="status-badge status-info" id="system-time">🕒 --:--:--</div>
+                <div class="status-badge status-info" id="update-status">📡 Güncelleniyor...</div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value power" id="quick-power">-- kW</div>
+                <div class="stat-label">Jeneratör Gücü</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-value rpm" id="quick-rpm">-- rpm</div>
+                <div class="stat-label">Motor RPM</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⛽</div>
+                <div class="stat-value fuel" id="quick-fuel">--%</div>
+                <div class="stat-label">Yakıt Seviyesi</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔋</div>
+                <div class="stat-value battery" id="quick-battery">-- V</div>
+                <div class="stat-label">Batarya</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="controls-section">
+            <div class="controls-header">
+                <h3>🎛️ Jeneratör Kontrol Paneli</h3>
+                <p>Jeneratörü uzaktan kontrol edin ve sistem modunu değiştirin</p>
+            </div>
+            <div class="control-buttons">
+                <button class="btn btn-start" onclick="sendCommand('start')" id="btn-start">
+                    🚀 START
+                </button>
+                <button class="btn btn-stop" onclick="sendCommand('stop')" id="btn-stop">
+                    🛑 STOP
+                </button>
+                <button class="btn btn-auto" onclick="sendCommand('auto')" id="btn-auto">
+                    🤖 AUTO
+                </button>
+                <button class="btn btn-manual" onclick="sendCommand('manual')" id="btn-manual">
+                    👨‍🔧 MANUEL
+                </button>
+                <button class="btn btn-test" onclick="sendCommand('test')" id="btn-test">
+                    🧪 TEST
+                </button>
+                <button class="btn btn-emergency" onclick="confirmEmergency()" id="btn-emergency">
+                    🚨 ACİL STOP
+                </button>
+            </div>
+        </div>
+
+        <!-- Alarm Panel -->
+        <div class="alarm-panel">
+            <h3>🚨 Sistem Alarm Durumu</h3>
+            <div id="alarm-status">
+                <div class="loading">Alarm durumu kontrol ediliyor</div>
+            </div>
+        </div>
+
+        <!-- Main Data Cards -->
+        <div class="cards-grid">
+            <!-- System Status Card -->
+            <div class="card">
+                <h3><span class="card-icon">🔧</span>Sistem Durumu</h3>
+                <div class="metric">
+                    <span class="metric-label">🎯 Çalışma Durumu:</span>
+                    <span class="metric-value" id="system-status">Yükleniyor...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">⚙️ Operasyon Modu:</span>
+                    <span class="metric-value" id="system-mode">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">⏱️ Sistem Çalışma Süresi:</span>
+                    <span class="metric-value" id="uptime">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">💚 Sistem Sağlığı:</span>
+                    <span class="metric-value" id="system-health">--</span>
+                </div>
+            </div>
+
+            <!-- Mains Power Card -->
+            <div class="card">
+                <h3><span class="card-icon">🔌</span>Şebeke Elektrik Bilgileri</h3>
+                <div class="metric">
+                    <span class="metric-label">L1 Voltaj:</span>
+                    <span class="metric-value voltage" id="mains-l1-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">L2 Voltaj:</span>
+                    <span class="metric-value voltage" id="mains-l2-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">L3 Voltaj:</span>
+                    <span class="metric-value voltage" id="mains-l3-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Frekans:</span>
+                    <span class="metric-value frequency" id="mains-frequency">-- Hz</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Toplam Güç:</span>
+                    <span class="metric-value power" id="mains-power">-- kW</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Şebeke Durumu:</span>
+                    <span class="metric-value" id="mains-status">--</span>
+                </div>
+            </div>
+
+            <!-- Generator Card -->
+            <div class="card">
+                <h3><span class="card-icon">⚡</span>Jeneratör Elektrik Bilgileri</h3>
+                <div class="metric">
+                    <span class="metric-label">L1 Voltaj:</span>
+                    <span class="metric-value voltage" id="gen-l1-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">L2 Voltaj:</span>
+                    <span class="metric-value voltage" id="gen-l2-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">L3 Voltaj:</span>
+                    <span class="metric-value voltage" id="gen-l3-voltage">-- V</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Frekans:</span>
+                    <span class="metric-value frequency" id="gen-frequency">-- Hz</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Üretilen Güç:</span>
+                    <span class="metric-value power" id="gen-power">-- kW</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Güç Faktörü:</span>
+                    <span class="metric-value" id="gen-power-factor">--</span>
+                </div>
+            </div>
+
+            <!-- Engine Card -->
+            <div class="card">
+                <h3><span class="card-icon">🔩</span>Motor ve Yakıt Bilgileri</h3>
+                <div class="metric">
+                    <span class="metric-label">Motor RPM:</span>
+                    <span class="metric-value rpm" id="engine-rpm">-- rpm</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Motor Sıcaklık:</span>
+                    <span class="metric-value temperature" id="engine-temp">-- °C</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Yağ Basıncı:</span>
+                    <span class="metric-value" id="oil-pressure">-- bar</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Yakıt Seviyesi:</span>
+                    <span class="metric-value fuel" id="fuel-level">--%</span>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill fuel-progress" id="fuel-progress"></div>
+                        </div>
+                        <div class="progress-text" id="fuel-text">Yakıt durumu kontrol ediliyor...</div>
+                    </div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Batarya Voltajı:</span>
+                    <span class="metric-value battery" id="battery-voltage">-- V</span>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill battery-progress" id="battery-progress"></div>
+                        </div>
+                        <div class="progress-text" id="battery-text">Batarya durumu kontrol ediliyor...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="footer-item">
+                    📡 <strong>Son Güncelleme:</strong><br>
+                    <span class="footer-value" id="last-update">--:--:--</span>
+                </div>
+                <div class="footer-item">
+                    🌐 <strong>WiFi Sinyal Gücü:</strong><br>
+                    <span class="footer-value" id="wifi-signal">-- dBm</span>
+                </div>
+                <div class="footer-item">
+                    📊 <strong>Veri Güncellemesi:</strong><br>
+                    <span class="footer-value">Her 3 saniyede bir</span>
+                </div>
+                <div class="footer-item">
+                    💻 <strong>ESP32 IP:</strong><br>
+                    <span class="footer-value" id="device-ip">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let isConnected = false;
+        let updateInterval;
+        let consecutiveErrors = 0;
+        const MAX_ERRORS = 3;
+        
+        // Configuration
+        const API_BASE_URL = ''; // ESP32 IP'si buraya yazılacak veya boş bırakılabilir
+        const UPDATE_INTERVAL = 3000; // 3 saniye
+        
+        // Page initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+        
+        function initializePage() {
+            showNotification('🚀 Dashboard başlatılıyor...', 'info');
+            updateSystemTime();
+            setInterval(updateSystemTime, 1000);
+            startDataUpdate();
+            
+            // Set device IP in footer
+            document.getElementById('device-ip').textContent = window.location.hostname || 'localhost';
+        }
+        
+        function startDataUpdate() {
+            updateData();
+            updateInterval = setInterval(updateData, UPDATE_INTERVAL);
+        }
+        
+        function updateSystemTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('tr-TR');
+        function updateSystemTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('tr-TR');
+            const dateString = now.toLocaleDateString('tr-TR');
+            document.getElementById('system-time').textContent = `🕒 ${timeString}`;
+        }
+        
+        async function updateData() {
+            try {
+                document.getElementById('update-status').textContent = '📡 Güncelleniyor...';
+                
+                // Get status information
+                const statusResponse = await fetch(API_BASE_URL + '/api/status');
+                const statusData = await statusResponse.json();
+                
+                // Get detailed data
+                const dataResponse = await fetch(API_BASE_URL + '/api/data');
+                const data = await dataResponse.json();
+                
+                // Update all sections
+                updateConnectionStatus(statusData.connected);
+                updateQuickStats(data);
+                updateSystemInfo(statusData, data);
+                updateElectricalData(data);
+                updateEngineData(data);
+                updateAlarmStatus(data);
+                updateFooter(statusData);
+                
+                // Reset error counter on success
+                consecutiveErrors = 0;
+                document.getElementById('update-status').textContent = '✅ Güncel';
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString('tr-TR');
+                
+            } catch (error) {
+                console.error('Data update error:', error);
+                handleUpdateError();
+            }
+        }
+        
+        function handleUpdateError() {
+            consecutiveErrors++;
+            document.getElementById('update-status').textContent = '❌ Hata';
+            
+            if (consecutiveErrors >= MAX_ERRORS) {
+                updateConnectionStatus(false);
+                showNotification('⚠️ Bağlantı problemi! Yeniden bağlanmaya çalışılıyor...', 'warning');
+            }
+        }
+        
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connection-status');
+            
+            if (connected) {
+                statusElement.innerHTML = '<span class="status-badge status-online">🟢 Bağlı ve Aktif</span>';
+                isConnected = true;
+                
+                // Enable control buttons
+                enableControlButtons(true);
+            } else {
+                statusElement.innerHTML = '<span class="status-badge status-offline pulse">🔴 Bağlantı Kesildi</span>';
+                isConnected = false;
+                
+                // Disable control buttons
+                enableControlButtons(false);
+                
+                // Show default values
+                showDefaultValues();
+            }
+        }
+        
+        function enableControlButtons(enable) {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.disabled = !enable;
+                button.style.opacity = enable ? '1' : '0.5';
+                button.style.cursor = enable ? 'pointer' : 'not-allowed';
+            });
+        }
+        
+        function showDefaultValues() {
+            // Quick stats
+            document.getElementById('quick-power').textContent = '-- kW';
+            document.getElementById('quick-rpm').textContent = '-- rpm';
+            document.getElementById('quick-fuel').textContent = '--%';
+            document.getElementById('quick-battery').textContent = '-- V';
+            
+            // System info
+            document.getElementById('system-status').textContent = 'Bağlantı Kesildi';
+            document.getElementById('system-mode').textContent = '--';
+            document.getElementById('uptime').textContent = '--';
+            document.getElementById('system-health').textContent = 'Bilinmiyor';
+        }
+        
+        function updateQuickStats(data) {
+            if (data.electrical && data.engine) {
+                document.getElementById('quick-power').textContent = 
+                    (data.electrical.generator?.power || 0).toFixed(1) + ' kW';
+                document.getElementById('quick-rpm').textContent = 
+                    (data.engine.rpm || 0).toFixed(0) + ' rpm';
+                document.getElementById('quick-fuel').textContent = 
+                    (data.engine.fuel_level || 0).toFixed(1) + '%';
+                document.getElementById('quick-battery').textContent = 
+                    (data.engine.battery_voltage || 0).toFixed(1) + ' V';
+            }
+        }
+        
+        function updateSystemInfo(statusData, data) {
+            document.getElementById('system-status').textContent = statusData.status_text || 'Bilinmiyor';
+            document.getElementById('system-mode').textContent = statusData.mode_text || '--';
+            
+            // System health
+            const isHealthy = statusData.healthy;
+            const healthElement = document.getElementById('system-health');
+            if (isHealthy) {
+                healthElement.textContent = '✅ Sağlıklı';
+                healthElement.className = 'metric-value power';
+            } else {
+                healthElement.textContent = '⚠️ Sorunlu';
+                healthElement.className = 'metric-value temperature';
+            }
+            
+            // Uptime
+            if (statusData.uptime) {
+                const uptimeSeconds = Math.floor(statusData.uptime / 1000);
+                const hours = Math.floor(uptimeSeconds / 3600);
+                const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+                const seconds = uptimeSeconds % 60;
+                document.getElementById('uptime').textContent = `${hours}s ${minutes}d ${seconds}sn`;
+            }
+        }
+        
+        function updateElectricalData(data) {
+            if (data.electrical) {
+                // Mains data
+                const mains = data.electrical.mains;
+                if (mains) {
+                    document.getElementById('mains-l1-voltage').textContent = (mains.voltage?.l1 || 0).toFixed(1) + ' V';
+                    document.getElementById('mains-l2-voltage').textContent = (mains.voltage?.l2 || 0).toFixed(1) + ' V';
+                    document.getElementById('mains-l3-voltage').textContent = (mains.voltage?.l3 || 0).toFixed(1) + ' V';
+                    document.getElementById('mains-frequency').textContent = (mains.frequency || 0).toFixed(1) + ' Hz';
+                    document.getElementById('mains-power').textContent = (mains.power || 0).toFixed(1) + ' kW';
+                    
+                    // Mains status
+                    const mainsAvailable = mains.voltage?.l1 > 100 && mains.frequency > 45;
+                    const mainsStatusElement = document.getElementById('mains-status');
+                    if (mainsAvailable) {
+                        mainsStatusElement.textContent = '🟢 Mevcut';
+                        mainsStatusElement.className = 'metric-value power';
+                    } else {
+                        mainsStatusElement.textContent = '🔴 Kesildi';
+                        mainsStatusElement.className = 'metric-value rpm';
+                    }
+                }
+                
+                // Generator data
+                const gen = data.electrical.generator;
+                if (gen) {
+                    document.getElementById('gen-l1-voltage').textContent = (gen.voltage?.l1 || 0).toFixed(1) + ' V';
+                    document.getElementById('gen-l2-voltage').textContent = (gen.voltage?.l2 || 0).toFixed(1) + ' V';
+                    document.getElementById('gen-l3-voltage').textContent = (gen.voltage?.l3 || 0).toFixed(1) + ' V';
+                    document.getElementById('gen-frequency').textContent = (gen.frequency || 0).toFixed(1) + ' Hz';
+                    document.getElementById('gen-power').textContent = (gen.power || 0).toFixed(1) + ' kW';
+                    document.getElementById('gen-power-factor').textContent = (gen.power_factor || 0).toFixed(2);
+                }
+            }
+        }
+        
+        function updateEngineData(data) {
+            if (data.engine) {
+                const engine = data.engine;
+                
+                document.getElementById('engine-rpm').textContent = (engine.rpm || 0).toFixed(0) + ' rpm';
+                document.getElementById('engine-temp').textContent = (engine.temperature || 0).toFixed(1) + ' °C';
+                document.getElementById('oil-pressure').textContent = (engine.oil_pressure || 0).toFixed(1) + ' bar';
+                
+                // Fuel level with progress bar
+                const fuelLevel = engine.fuel_level || 0;
+                document.getElementById('fuel-level').textContent = fuelLevel.toFixed(1) + '%';
+                
+                const fuelProgress = Math.max(0, Math.min(100, fuelLevel));
+                document.getElementById('fuel-progress').style.width = fuelProgress + '%';
+                
+                // Fuel status text
+                let fuelText = '';
+                if (fuelLevel > 75) {
+                    fuelText = '🟢 Yakıt seviyesi iyi';
+                } else if (fuelLevel > 25) {
+                    fuelText = '🟡 Yakıt seviyesi orta';
+                } else if (fuelLevel > 10) {
+                    fuelText = '🟠 Yakıt seviyesi düşük';
+                } else {
+                    fuelText = '🔴 Yakıt seviyesi kritik!';
+                }
+                document.getElementById('fuel-text').textContent = fuelText;
+                
+                // Battery with progress bar
+                const batteryVoltage = engine.battery_voltage || 0;
+                document.getElementById('battery-voltage').textContent = batteryVoltage.toFixed(1) + ' V';
+                
+                // Battery percentage calculation (10V = 0%, 14V = 100%)
+                const batteryPercent = Math.max(0, Math.min(100, ((batteryVoltage - 10) / 4) * 100));
+                document.getElementById('battery-progress').style.width = batteryPercent + '%';
+                
+                // Battery status text
+                let batteryText = '';
+                if (batteryVoltage > 12.5) {
+                    batteryText = '🟢 Batarya durumu iyi';
+                } else if (batteryVoltage > 11.5) {
+                    batteryText = '🟡 Batarya durumu orta';
+                } else if (batteryVoltage > 10.5) {
+                    batteryText = '🟠 Batarya durumu düşük';
+                } else {
+                    batteryText = '🔴 Batarya durumu kritik!';
+                }
+                document.getElementById('battery-text').textContent = batteryText;
+            }
+        }
+        
+        function updateAlarmStatus(data) {
+            const alarmContainer = document.getElementById('alarm-status');
+            
+            if (data.system && data.system.alarms) {
+                const alarms = data.system.alarms;
+                let alarmHtml = '';
+                
+                if (alarms.shutdown) {
+                    alarmHtml += '<div class="alarm-item alarm-critical">🚨 KAPATMA ALARMI AKTİF - Sistem kritik durumda!</div>';
+                }
+                
+                if (alarms.loaddump) {
+                    alarmHtml += '<div class="alarm-item alarm-warning">⚠️ YÜK ATMA ALARMI AKTİF - Yük azaltılıyor</div>';
+                }
+                
+                if (alarms.warning) {
+                    alarmHtml += '<div class="alarm-item alarm-warning">🟡 UYARI ALARMI AKTİF - Dikkat gerekli</div>';
+                }
+                
+                // Additional checks based on engine data
+                if (data.engine) {
+                    if (data.engine.fuel_level < 10) {
+                        alarmHtml += '<div class="alarm-item alarm-warning">⛽ DÜŞÜK YAKIT UYARISI - Yakıt seviyesi %' + data.engine.fuel_level.toFixed(1) + '</div>';
+                    }
+                    
+                    if (data.engine.battery_voltage < 11.0) {
+                        alarmHtml += '<div class="alarm-item alarm-warning">🔋 DÜŞÜK BATARYA UYARISI - Batarya ' + data.engine.battery_voltage.toFixed(1) + 'V</div>';
+                    }
+                    
+                    if (data.engine.temperature > 90) {
+                        alarmHtml += '<div class="alarm-item alarm-warning">🌡️ YÜKSEK SICAKLIK UYARISI - Motor ' + data.engine.temperature.toFixed(1) + '°C</div>';
+                    }
+                }
+                
+                if (!alarms.shutdown && !alarms.loaddump && !alarms.warning && !alarmHtml.includes('UYARI')) {
+                    alarmHtml = '<div class="alarm-item alarm-ok">✅ TÜM SİSTEMLER NORMAL - Herhangi bir alarm yok</div>';
+                }
+                
+                alarmContainer.innerHTML = alarmHtml;
+            } else {
+                alarmContainer.innerHTML = '<div class="alarm-item alarm-warning">❓ Alarm durumu alınamadı - Bağlantıyı kontrol edin</div>';
+            }
+        }
+        
+        function updateFooter(statusData) {
+            if (statusData.wifi_rssi) {
+                const rssi = statusData.wifi_rssi;
+                let signalQuality = '';
+                
+                if (rssi > -50) signalQuality = '🟢 Mükemmel';
+                else if (rssi > -60) signalQuality = '🟢 İyi';
+                else if (rssi > -70) signalQuality = '🟡 Orta';
+                else if (rssi > -80) signalQuality = '🟠 Zayıf';
+                else signalQuality = '🔴 Çok Zayıf';
+                
+                document.getElementById('wifi-signal').textContent = `${rssi} dBm (${signalQuality})`;
+            }
+        }
+        
+        // Control functions
+        async function sendCommand(command) {
+            if (!isConnected) {
+                showNotification('❌ Jeneratöre bağlantı yok! Komut gönderilemez.', 'error');
+                return;
+            }
+            
+            // Disable button temporarily
+            const button = document.getElementById(`btn-${command}`);
+            const originalText = button.textContent;
+            button.textContent = '⏳ Gönderiliyor...';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch(API_BASE_URL + `/api/${command}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('✅ ' + result.message, 'success');
+                    // Update data immediately after successful command
+                    setTimeout(updateData, 500);
+                } else {
+                    showNotification('❌ ' + result.message, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Command send error:', error);
+                showNotification('❌ Komut gönderilemedi: Bağlantı hatası', 'error');
+            } finally {
+                // Re-enable button
+                button.textContent = originalText;
+                button.disabled = false;
+            }
+        }
+        
+        function confirmEmergency() {
+            const confirmed = confirm('⚠️ ACİL DURDURMA UYARISI\n\n' +
+                'Bu işlem jeneratörü DERHAL durduracaktır!\n' +
+                'Bu işlem geri alınamaz ve sistemi güvenli mod\'a alacaktır.\n\n' +
+                'Emin misiniz?');
+                
+            if (confirmed) {
+                const doubleConfirm = confirm('🚨 SON UYARI 🚨\n\n' +
+                    'ACİL DURDURMA işlemini onaylıyorsunuz.\n' +
+                    'Jeneratör derhal durdurulacak!\n\n' +
+                    'DEVAM ET?');
+                    
+                if (doubleConfirm) {
+                    sendCommand('emergency');
+                }
+            }
+        }
+        
+        function showNotification(message, type) {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => {
+                notification.remove();
+            });
+            
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Show with animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        // Page lifecycle management
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Page is hidden, stop updates to save resources
+                clearInterval(updateInterval);
+                console.log('Page hidden, stopping updates');
+            } else {
+                // Page is visible again, restart updates
+                console.log('Page visible, restarting updates');
+                startDataUpdate();
+            }
+        });
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', function() {
+            clearInterval(updateInterval);
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 's':
+                        event.preventDefault();
+                        sendCommand('start');
+                        break;
+                    case 'x':
+                        event.preventDefault();
+                        sendCommand('stop');
+                        break;
+                    case 'a':
+                        event.preventDefault();
+                        sendCommand('auto');
+                        break;
+                    case 'm':
+                        event.preventDefault();
+                        sendCommand('manual');
+                        break;
+                    case 't':
+                        event.preventDefault();
+                        sendCommand('test');
+                        break;
+                    case 'r':
+                        event.preventDefault();
+                        updateData();
+                        showNotification('🔄 Veriler manuel olarak güncellendi', 'info');
+                        break;
+                }
+            }
+            
+            // ESC key to refresh data
+            if (event.key === 'Escape') {
+                updateData();
+                showNotification('🔄 Veriler yenilendi', 'info');
+            }
+        });
+        
+        // Error handling for network issues
+        window.addEventListener('online', function() {
+            showNotification('🌐 İnternet bağlantısı yeniden kuruldu', 'success');
+            updateData();
+        });
+        
+        window.addEventListener('offline', function() {
+            showNotification('📡 İnternet bağlantısı kesildi', 'warning');
+        });
+        
+        // Initialize tooltips and help system
+        function initializeHelp() {
+            // Add help tooltips to buttons
+            const helpTexts = {
+                'btn-start': 'Jeneratörü başlatır (Ctrl+S)',
+                'btn-stop': 'Jeneratörü durdurur (Ctrl+X)',
+                'btn-auto': 'Otomatik moda geçer (Ctrl+A)',
+                'btn-manual': 'Manuel moda geçer (Ctrl+M)',
+                'btn-test': 'Test moduna geçer (Ctrl+T)',
+                'btn-emergency': 'Acil durdurma yapar'
+            };
+            
+            Object.entries(helpTexts).forEach(([id, text]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.title = text;
+                }
+            });
+        }
+        
+        // Call help initialization
+        initializeHelp();
+        
+        // Performance monitoring
+        let performanceMetrics = {
+            updateCount: 0,
+            errorCount: 0,
+            startTime: Date.now()
+        };
+        
+        function logPerformance() {
+            performanceMetrics.updateCount++;
+            
+            if (performanceMetrics.updateCount % 20 === 0) {
+                const runtime = (Date.now() - performanceMetrics.startTime) / 1000;
+                console.log(`Dashboard Performance: ${performanceMetrics.updateCount} updates, ${performanceMetrics.errorCount} errors in ${runtime}s`);
+            }
+        }
+        
+        // Add performance logging to update function
+        const originalUpdateData = updateData;
+        updateData = async function() {
+            try {
+                await originalUpdateData();
+                logPerformance();
+            } catch (error) {
+                performanceMetrics.errorCount++;
+                throw error;
+            }
+        };
+        
+        console.log('🚀 D-300 MK3 Dashboard initialized successfully!');
+        console.log('📋 Keyboard shortcuts:');
+        console.log('   Ctrl+S: Start generator');
+        console.log('   Ctrl+X: Stop generator');
+        console.log('   Ctrl+A: Auto mode');
+        console.log('   Ctrl+M: Manual mode');
+        console.log('   Ctrl+T: Test mode');
+        console.log('   Ctrl+R: Refresh data');
+        console.log('   ESC: Refresh data');
+    </script>
+</body>
+</html>
