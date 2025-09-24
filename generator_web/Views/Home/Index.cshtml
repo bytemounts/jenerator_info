@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Güç İzleme Paneli";
+
 }
+@model generator_web.Models.generator_data
 
 <style>
     .monitoring-container {
@@ -208,22 +210,22 @@
                     <span class="status-indicator status-online"></span>
                     Çalışma Durumu:
                 </span>
-                <span class="parameter-value">Aktif</span>
+                <span class="parameter-value">@Model.CalismaDurumu</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">⚙️ Operasyon Modu:</span>
-                <span class="parameter-value">Otomatik</span>
+                <span class="parameter-value">@Model.OperationMode</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">⏱️ Sistem Çalışma Süresi:</span>
-                <span class="parameter-value">24:36:15</span>
+                <span class="parameter-value">@Model.SistemCalismaSuresi/(3600*24):@Model.SistemCalismaSuresi/3600:@Model.SistemCalismaSuresi%60</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">✅ Sistem Sağlığı:</span>
-                <span class="parameter-value" style="color: #4caf50;">İyi</span>
+                <span class="parameter-value" style="color: #4caf50;">Sağlıklı kardeşim!</span>
             </div>
         </div>
 
@@ -234,32 +236,32 @@
 
             <div class="parameter-row">
                 <span class="parameter-label">L1 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l1 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">L2 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l2 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">L3 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l3 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Frekans:</span>
-                <span class="parameter-value value-frequency">-- Hz</span>
+                <span class="parameter-value value-frequency">@Model.SebekeHz Hz</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Toplam Güç:</span>
-                <span class="parameter-value value-power">-- kW</span>
+                <span class="parameter-value value-power">@Model.ToplamGuc kW</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Şebeke Durumu:</span>
-                <span class="parameter-value">Bekleniyor</span>
+                <span class="parameter-value">@Model.SebekeDurumu</span>
             </div>
         </div>
 
@@ -270,32 +272,32 @@
 
             <div class="parameter-row">
                 <span class="parameter-label">L1 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.GenVoltaj_l1 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">L2 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.GenVoltaj_l2 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">L3 Voltaj:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.GenVoltaj_l3 V</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Frekans:</span>
-                <span class="parameter-value value-frequency">-- Hz</span>
+                <span class="parameter-value value-frequency">@Model.GenHz Hz</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Üretilen Güç:</span>
-                <span class="parameter-value value-power">-- kW</span>
+                <span class="parameter-value value-power">@Model.GenUretilenGuc kW</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Güç Faktörü:</span>
-                <span class="parameter-value">--</span>
+                <span class="parameter-value">@Model.GenGucFaktoru</span>
             </div>
         </div>
 
@@ -306,27 +308,27 @@
 
             <div class="parameter-row">
                 <span class="parameter-label">Motor RPM:</span>
-                <span class="parameter-value value-rpm">-- rpm</span>
+                <span class="parameter-value value-rpm">@Model.MotorRpm rpm</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Motor Sıcaklık:</span>
-                <span class="parameter-value value-temperature">-- °C</span>
+                <span class="parameter-value value-temperature">@Model.MotorSicaklik °C</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Yağ Basıncı:</span>
-                <span class="parameter-value value-percentage">-- %</span>
+                <span class="parameter-value value-percentage">@Model.YagBasinci %</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Yakıt Seviyesi:</span>
-                <span class="parameter-value value-percentage">-- %</span>
+                <span class="parameter-value value-percentage">@Model.YakitSeviyesi %</span>
             </div>
 
             <div class="parameter-row">
                 <span class="parameter-label">Batarya Voltajı:</span>
-                <span class="parameter-value value-voltage">-- V</span>
+                <span class="parameter-value value-voltage">@Model.BataryaVoltaji V</span>
             </div>
         </div>
 
@@ -354,83 +356,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Simüle edilmiş veri güncelleme fonksiyonu
-    function updateDashboardData() {
-        // Şebeke voltajları
-        document.querySelectorAll('.panel:nth-child(2) .value-voltage').forEach((el, index) => {
-            el.textContent = (220 + Math.random() * 10).toFixed(1) + ' V';
-        });
-
-        // Şebeke frekans
-        document.querySelector('.panel:nth-child(2) .value-frequency').textContent =
-            (49.5 + Math.random()).toFixed(2) + ' Hz';
-
-        // Şebeke güç
-        document.querySelector('.panel:nth-child(2) .value-power').textContent =
-            (Math.random() * 100).toFixed(2) + ' kW';
-
-        // Jeneratör voltajları
-        document.querySelectorAll('.panel:nth-child(3) .value-voltage').forEach((el, index) => {
-            el.textContent = (220 + Math.random() * 10).toFixed(1) + ' V';
-        });
-
-        // Jeneratör frekans
-        document.querySelector('.panel:nth-child(3) .value-frequency').textContent =
-            (49.5 + Math.random()).toFixed(2) + ' Hz';
-
-        // Jeneratör güç
-        document.querySelector('.panel:nth-child(3) .value-power').textContent =
-            (Math.random() * 150).toFixed(2) + ' kW';
-
-        // Motor bilgileri
-        document.querySelector('.value-rpm').textContent =
-            (1450 + Math.random() * 100).toFixed(0) + ' rpm';
-
-        document.querySelector('.value-temperature').textContent =
-            (75 + Math.random() * 10).toFixed(1) + ' °C';
-
-        document.querySelectorAll('.panel:nth-child(4) .value-percentage').forEach((el, index) => {
-            el.textContent = (60 + Math.random() * 30).toFixed(0) + ' %';
-        });
-
-        document.querySelector('.panel:nth-child(4) .value-voltage').textContent =
-            (24 + Math.random() * 2).toFixed(1) + ' V';
-
-        // Son güncelleme zamanı
-        const now = new Date();
-        document.getElementById('lastUpdate').textContent =
-            now.toLocaleTimeString('tr-TR');
-
-        // WiFi sinyal gücü
-        document.getElementById('wifiSignal').textContent =
-            (70 + Math.random() * 20).toFixed(0) + '%';
-    }
-
-    // Sayfa yüklendiğinde ve her 2 saniyede bir güncelle
-    document.addEventListener('DOMContentLoaded', function() {
-        updateDashboardData();
-        setInterval(updateDashboardData, 2000);
-    });
-
-    // SignalR bağlantısı (gerçek uygulamada kullanılacak)
-    /*
-    $(function () {
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/monitoringHub")
-            .build();
-
-        connection.on("UpdateDashboard", function (data) {
-            // Gerçek veri güncellemeleri burada yapılacak
-            console.log("Veri güncellendi:", data);
-        });
-
-        connection.start().then(function () {
-            console.log("SignalR bağlantısı kuruldu");
-        }).catch(function (err) {
-            console.error(err.toString());
-        });
-    });
-    */
-</script>

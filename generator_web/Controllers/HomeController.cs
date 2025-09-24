@@ -6,16 +6,21 @@ namespace generator_web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(AppDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            // En son veriyi çek
+            var data = _context.generator_datas
+                        .OrderByDescending(d => d.timestamp)
+                        .FirstOrDefault();
+
+            return View(data);
         }
 
         public IActionResult Privacy()
