@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\grfsp\\source\\repos\\generator_web\\generator_web\\generator_web.csproj": {}
+    "C:\\Users\\grfsp\\OneDrive\\Masaüstü\\ardunio\\jenerator_info\\generator_web\\generator_web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\grfsp\\source\\repos\\generator_web\\generator_web\\generator_web.csproj": {
+    "C:\\Users\\grfsp\\OneDrive\\Masaüstü\\ardunio\\jenerator_info\\generator_web\\generator_web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\grfsp\\source\\repos\\generator_web\\generator_web\\generator_web.csproj",
+        "projectUniqueName": "C:\\Users\\grfsp\\OneDrive\\Masaüstü\\ardunio\\jenerator_info\\generator_web\\generator_web.csproj",
         "projectName": "generator_web",
-        "projectPath": "C:\\Users\\grfsp\\source\\repos\\generator_web\\generator_web\\generator_web.csproj",
+        "projectPath": "C:\\Users\\grfsp\\OneDrive\\Masaüstü\\ardunio\\jenerator_info\\generator_web\\generator_web.csproj",
         "packagesPath": "C:\\Users\\grfsp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\grfsp\\source\\repos\\generator_web\\generator_web\\obj\\",
+        "outputPath": "C:\\Users\\grfsp\\OneDrive\\Masaüstü\\ardunio\\jenerator_info\\generator_web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
