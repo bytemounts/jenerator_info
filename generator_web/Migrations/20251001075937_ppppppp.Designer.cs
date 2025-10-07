@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using generator_web.Models;
 
@@ -11,9 +12,11 @@ using generator_web.Models;
 namespace generator_web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251001075937_ppppppp")]
+    partial class ppppppp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,39 +136,36 @@ namespace generator_web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<float>("BataryaVoltaji")
-                        .HasColumnType("real");
+                    b.Property<int>("BataryaVoltaji")
+                        .HasColumnType("int");
 
                     b.Property<string>("CalismaDurumu")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("GenGucFaktoru")
-                        .HasColumnType("real");
+                    b.Property<int>("GenGucFaktoru")
+                        .HasColumnType("int");
 
-                    b.Property<float>("GenHz")
-                        .HasColumnType("real");
+                    b.Property<int>("GenHz")
+                        .HasColumnType("int");
 
-                    b.Property<float>("GenUretilenGuc")
-                        .HasColumnType("real");
+                    b.Property<int>("GenUretilenGuc")
+                        .HasColumnType("int");
 
-                    b.Property<float>("GenVoltaj_l1")
-                        .HasColumnType("real");
+                    b.Property<int>("GenVoltaj_l1")
+                        .HasColumnType("int");
 
-                    b.Property<float>("GenVoltaj_l2")
-                        .HasColumnType("real");
+                    b.Property<int>("GenVoltaj_l2")
+                        .HasColumnType("int");
 
-                    b.Property<float>("GenVoltaj_l3")
-                        .HasColumnType("real");
+                    b.Property<int>("GenVoltaj_l3")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("KapatmaAlarmi")
-                        .HasColumnType("bit");
+                    b.Property<int>("MotorRpm")
+                        .HasColumnType("int");
 
-                    b.Property<float>("MotorRpm")
-                        .HasColumnType("real");
-
-                    b.Property<float>("MotorSicaklik")
-                        .HasColumnType("real");
+                    b.Property<int>("MotorSicaklik")
+                        .HasColumnType("int");
 
                     b.Property<int>("OperationMode")
                         .HasColumnType("int");
@@ -173,41 +173,32 @@ namespace generator_web.Migrations
                     b.Property<bool>("SebekeDurumu")
                         .HasColumnType("bit");
 
-                    b.Property<float>("SebekeHz")
-                        .HasColumnType("real");
+                    b.Property<int>("SebekeHz")
+                        .HasColumnType("int");
 
-                    b.Property<float>("SebekeVoltaj_l1")
-                        .HasColumnType("real");
+                    b.Property<int>("SebekeVoltaj_l1")
+                        .HasColumnType("int");
 
-                    b.Property<float>("SebekeVoltaj_l2")
-                        .HasColumnType("real");
+                    b.Property<int>("SebekeVoltaj_l2")
+                        .HasColumnType("int");
 
-                    b.Property<float>("SebekeVoltaj_l3")
-                        .HasColumnType("real");
+                    b.Property<int>("SebekeVoltaj_l3")
+                        .HasColumnType("int");
 
-                    b.Property<long>("SistemCalismaSuresi")
-                        .HasColumnType("bigint");
+                    b.Property<int>("SistemCalismaSuresi")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("SistemSaglikli")
-                        .HasColumnType("bit");
+                    b.Property<int>("ToplamGuc")
+                        .HasColumnType("int");
 
-                    b.Property<float>("ToplamGuc")
-                        .HasColumnType("real");
+                    b.Property<int>("YagBasinci")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("UyariAlarmi")
-                        .HasColumnType("bit");
+                    b.Property<int>("YakitSeviyesi")
+                        .HasColumnType("int");
 
-                    b.Property<float>("YagBasinci")
-                        .HasColumnType("real");
-
-                    b.Property<float>("YakitSeviyesi")
-                        .HasColumnType("real");
-
-                    b.Property<bool>("YukAtmaAlarmi")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("timestamp")
-                        .HasColumnType("bigint");
+                    b.Property<int>("timestamp")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

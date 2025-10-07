@@ -7,7 +7,10 @@ namespace generator_web.Models
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        public DbSet<generator_data> generator_datas{ get; set; }
-        public DbSet<user_data> user_datas { get; set; }
+        public DbSet<generator_data> generator_datas { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
+        public DbSet<ControlAction> ControlActions { get ; set; }
+
     }
 }

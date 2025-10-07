@@ -1,15 +1,13 @@
 ﻿@{
     ViewBag.Title = "Güç İzleme Paneli";
-
 }
 @model generator_web.Models.generator_data
 
+
 <style>
     .monitoring-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         padding: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .dashboard-grid {
@@ -179,6 +177,25 @@
             gap: 10px;
             align-items: flex-start;
         }
+
+        .header {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            display: flex;
+        }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .control-buttons {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
     }
 
     .shimmer {
@@ -196,163 +213,730 @@
             background-position: 200% 0;
         }
     }
+
+
+    .dashboard-container {
+        max-width: auto;
+        margin: 0 auto;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .header {
+        display: flex; /* Flex aktif */
+        align-items: center; /* Dikeyde ortala */
+        justify-content: center; /* Yatayda ortala */
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px 30px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .header h1 {
+            font-size: 48px;
+            margin: 0;
+            padding: 0;
+        }
+
+
+    .header-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .header-btn {
+        padding: 12px 24px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-disconnect {
+        background: #ff6b6b;
+        color: white;
+    }
+
+    .btn-connect {
+        background: #4ecdc4;
+        color: white;
+    }
+
+    .btn-update {
+        background: #45b7d1;
+        color: white;
+    }
+
+    .header-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+    .stat-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .stat-value {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .power .stat-value {
+        color: #27ae60;
+    }
+
+    .rpm .stat-value {
+        color: #e74c3c;
+    }
+
+    .fuel .stat-value {
+        color: #16a085;
+    }
+
+    .battery .stat-value {
+        color: #333;
+    }
+
+    /* Control Panel */
+    .control-panel {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sistem-alarm {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 10px;
+        margin-top: 30px;
+    }
+
+    .control-info {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .sistem-info {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        gap: 10px
+    }
+
+    .sistem-alarm p {
+        text-align: center;
+    }
+
+    .control-info-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .control-info p {
+        color: white;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+
+    .control-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .control-btn {
+        padding: 18px 24px;
+        border-radius: 15px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+    .btn-start {
+        background: #27ae60;
+        color: white;
+    }
+
+    .btn-stop {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-auto {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-manual {
+        background: #9b59b6;
+        color: white;
+    }
+
+    .btn-test {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-emergency {
+        background: #c0392b;
+        color: white;
+    }
+
+    .btn-start::before {
+        content: "🚀";
+    }
+
+    .btn-stop::before {
+        content: "⏹️";
+    }
+
+    .btn-auto::before {
+        content: "🤖";
+    }
+
+    .btn-manual::before {
+        content: "👷";
+    }
+
+    .btn-test::before {
+        content: "🔧";
+    }
+
+    .btn-emergency::before {
+        content: "⚠️";
+    }
+
+    .alert-fuel_low {
+        background: rgba(255, 193, 7, 0.1);
+        border-left: 4px solid #ffc107;
+        color: #856404;
+    }
+
+    .alert-no_power {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+    }
+
+    .alert-dual_power {
+        background: rgba(255, 193, 7, 0.1);
+        border-left: 4px solid #ffc107;
+        color: #856404;
+    }
+
+    .alert-icon {
+        margin-right: 10px;
+        font-size: 16px;
+    }
+
+    .alert-message {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    .alert-time {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-left: 10px;
+    }
 </style>
 
-<div class="monitoring-container">
-    <div class="dashboard-grid">
-        <!-- Çalışma Durumu Paneli -->
-        <div class="panel">
-            <div class="panel-icon">🔧</div>
-            <h3>Çalışma Durumu</h3>
+<body>
 
-            <div class="parameter-row">
-                <span class="parameter-label">
-                    <span class="status-indicator status-online"></span>
-                    Çalışma Durumu:
-                </span>
-                <span class="parameter-value">@Model.CalismaDurumu</span>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>@ViewBag.Title</h1>
+        </div>
+
+
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card power">
+                <span class="stat-icon">⚡</span>
+                <div class="stat-value">@(Model?.GenUretilenGuc ?? 0) kW</div>
+                <div class="stat-label">Jeneratör Gücü</div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">⚙️ Operasyon Modu:</span>
-                <span class="parameter-value">@Model.OperationMode</span>
+            <div class="stat-card rpm">
+                <span class="stat-icon">🔄</span>
+                <div class="stat-value">@(Model?.MotorRpm ?? 0) rpm</div>
+                <div class="stat-label">Motor RPM</div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">⏱️ Sistem Çalışma Süresi:</span>
-                <span class="parameter-value">@Model.SistemCalismaSuresi/(3600*24):@Model.SistemCalismaSuresi/3600:@Model.SistemCalismaSuresi%60</span>
+            <div class="stat-card fuel">
+                <span class="stat-icon">⛽</span>
+                <div class="stat-value">@(Model?.YakitSeviyesi ?? 0) %</div>
+                <div class="stat-label">Yakıt Seviyesi</div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">✅ Sistem Sağlığı:</span>
-                <span class="parameter-value" style="color: #4caf50;">Sağlıklı kardeşim!</span>
+            <div class="stat-card battery">
+                <span class="stat-icon">🔋</span>
+                <div class="stat-value">@(Model?.BataryaVoltaji ?? 0) V</div>
+                <div class="stat-label">Batarya</div>
             </div>
         </div>
 
-        <!-- Şebeke Paneli -->
-        <div class="panel">
-            <div class="panel-icon">⚡</div>
-            <h3>Şebeke</h3>
-
-            <div class="parameter-row">
-                <span class="parameter-label">L1 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l1 V</span>
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="control-info">
+                <p>⚙️ Jeneratörü uzaktan kontrol edin ve sistem modunu değiştirin</p>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">L2 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l2 V</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">L3 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l3 V</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Frekans:</span>
-                <span class="parameter-value value-frequency">@Model.SebekeHz Hz</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Toplam Güç:</span>
-                <span class="parameter-value value-power">@Model.ToplamGuc kW</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Şebeke Durumu:</span>
-                <span class="parameter-value">@Model.SebekeDurumu</span>
+            <div class="control-buttons">
+                <button id="send_start" class="control-btn btn-start">START</button>
+                <button id="send_stop" class="control-btn btn-stop">STOP</button>
+                <button id="send_auto" class="control-btn btn-auto">AUTO</button>
+                <button id="send_manuel" class="control-btn btn-manual">MANUEL</button>
+                <button id="send_test" class="control-btn btn-test">TEST</button>
+                <button id="send_acilstop" class="control-btn btn-emergency">ACİL STOP</button>
             </div>
         </div>
 
-        <!-- Jeneratör Paneli -->
-        <div class="panel">
-            <div class="panel-icon">⚡</div>
-            <h3>Jeneratör</h3>
 
-            <div class="parameter-row">
-                <span class="parameter-label">L1 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.GenVoltaj_l1 V</span>
+        <div class="sistem-alarm">
+            <div class="sistem-info">
+                <h2>🚨 Sistem Alarm Durumu</h2>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">L2 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.GenVoltaj_l2 V</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">L3 Voltaj:</span>
-                <span class="parameter-value value-voltage">@Model.GenVoltaj_l3 V</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Frekans:</span>
-                <span class="parameter-value value-frequency">@Model.GenHz Hz</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Üretilen Güç:</span>
-                <span class="parameter-value value-power">@Model.GenUretilenGuc kW</span>
-            </div>
-
-            <div class="parameter-row">
-                <span class="parameter-label">Güç Faktörü:</span>
-                <span class="parameter-value">@Model.GenGucFaktoru</span>
-            </div>
+            @if (ViewBag.Alerts != null && ((List<generator_web.Models.Alert>)ViewBag.Alerts).Count > 0)
+            {
+                @foreach (var alert in (List<generator_web.Models.Alert>)ViewBag.Alerts)
+                {
+                    <div class="alert alert-@alert.Type.ToLower()">
+                        <span class="alert-icon">⚠️</span>
+                        <span class="alert-message">@alert.Message</span>
+                        <span class="alert-time">@alert.CreatedAt.ToString("HH:mm")</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>✅ Sistem normal çalışıyor</p>
+            }
         </div>
 
-        <!-- Motor Bilgileri Paneli -->
-        <div class="panel">
-            <div class="panel-icon">🔧</div>
-            <h3>Motor Bilgileri</h3>
+    </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">Motor RPM:</span>
-                <span class="parameter-value value-rpm">@Model.MotorRpm rpm</span>
+    <div class="monitoring-container">
+        <div class="dashboard-grid">
+            <!-- Çalışma Durumu Paneli -->
+            <div class="panel">
+                <div class="panel-icon">🔧</div>
+                <h3>Çalışma Durumu</h3>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">
+                        <span class="status-indicator status-online"></span>
+                        Çalışma Durumu:
+                    </span>
+                    <span class="parameter-value">@Model.CalismaDurumu</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">⚙️ Operasyon Modu:</span>
+                    <span class="parameter-value">@Model.OperationMode</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">⏱️ Sistem Çalışma Süresi:</span>
+                    <span class="parameter-value">@Model.SistemCalismaSuresi/(3600*24):@Model.SistemCalismaSuresi/3600:@Model.SistemCalismaSuresi%60</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">✅ Sistem Sağlığı:</span>
+                    <span class="parameter-value" style="color: #4caf50;">Sağlıklı kardeşim!</span>
+                </div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">Motor Sıcaklık:</span>
-                <span class="parameter-value value-temperature">@Model.MotorSicaklik °C</span>
+            <!-- Şebeke Paneli -->
+            <div class="panel">
+                <div class="panel-icon">⚡</div>
+                <h3>Şebeke</h3>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L1 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l1 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L2 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l2 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L3 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.SebekeVoltaj_l3 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Frekans:</span>
+                    <span class="parameter-value value-frequency">@Model.SebekeHz Hz</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Toplam Güç:</span>
+                    <span class="parameter-value value-power">@Model.ToplamGuc kW</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Şebeke Durumu:</span>
+                    <span class="parameter-value">@Model.SebekeDurumu</span>
+                </div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">Yağ Basıncı:</span>
-                <span class="parameter-value value-percentage">@Model.YagBasinci %</span>
+            <!-- Jeneratör Paneli -->
+            <div class="panel">
+                <div class="panel-icon">⚡</div>
+                <h3>Jeneratör</h3>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L1 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.GenVoltaj_l1 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L2 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.GenVoltaj_l2 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">L3 Voltaj:</span>
+                    <span class="parameter-value value-voltage">@Model.GenVoltaj_l3 V</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Frekans:</span>
+                    <span class="parameter-value value-frequency">@Model.GenHz Hz</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Üretilen Güç:</span>
+                    <span class="parameter-value value-power">@Model.GenUretilenGuc kW</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Güç Faktörü:</span>
+                    <span class="parameter-value">@Model.GenGucFaktoru</span>
+                </div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">Yakıt Seviyesi:</span>
-                <span class="parameter-value value-percentage">@Model.YakitSeviyesi %</span>
+            <!-- Motor Bilgileri Paneli -->
+            <div class="panel">
+                <div class="panel-icon">🔧</div>
+                <h3>Motor Bilgileri</h3>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Motor RPM:</span>
+                    <span class="parameter-value value-rpm">@Model.MotorRpm rpm</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Motor Sıcaklık:</span>
+                    <span class="parameter-value value-temperature">@Model.MotorSicaklik °C</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Yağ Basıncı:</span>
+                    <span class="parameter-value value-percentage">@Model.YagBasinci %</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Yakıt Seviyesi:</span>
+                    <span class="parameter-value value-percentage">@Model.YakitSeviyesi %</span>
+                </div>
+
+                <div class="parameter-row">
+                    <span class="parameter-label">Batarya Voltajı:</span>
+                    <span class="parameter-value value-voltage">@Model.BataryaVoltaji V</span>
+                </div>
             </div>
 
-            <div class="parameter-row">
-                <span class="parameter-label">Batarya Voltajı:</span>
-                <span class="parameter-value value-voltage">@Model.BataryaVoltaji V</span>
-            </div>
-        </div>
+            <!-- Alt Bilgi Çubuğu -->
+            <div class="bottom-bar">
+                <div class="bottom-bar-item">
+                    <span class="icon-small">📅</span>
+                    Son Güncelleme: <span id="lastUpdate">--:--:--</span>
+                </div>
 
-        <!-- Alt Bilgi Çubuğu -->
-        <div class="bottom-bar">
-            <div class="bottom-bar-item">
-                <span class="icon-small">📅</span>
-                Son Güncelleme: <span id="lastUpdate">--:--:--</span>
-            </div>
+                <div class="bottom-bar-item">
+                    <span class="icon-small">📶</span>
+                    WiFi Sinyal Gücü: <span id="wifiSignal">--%</span>
+                </div>
 
-            <div class="bottom-bar-item">
-                <span class="icon-small">📶</span>
-                WiFi Sinyal Gücü: <span id="wifiSignal">--%</span>
-            </div>
+                <div class="bottom-bar-item">
+                    <span class="icon-small">🔄</span>
+                    Veri Güncelleme: <span id="dataUpdate">Aktif</span>
+                </div>
 
-            <div class="bottom-bar-item">
-                <span class="icon-small">🔄</span>
-                Veri Güncelleme: <span id="dataUpdate">Aktif</span>
+                <div class="bottom-bar-item">
+                    <span class="icon-small">🌐</span>
+                    ESP32 IP: <span id="esp32Ip">192.168.1.100</span>
+                </div>
+                
             </div>
-
-            <div class="bottom-bar-item">
-                <span class="icon-small">🌐</span>
-                ESP32 IP: <span id="esp32Ip">192.168.1.100</span>
-            </div>
+            <form asp-controller="Login" asp-action="Logout" method="post">
+                <button type="submit">Se déconnecter</button>
+            </form>
         </div>
     </div>
-</div>
+
+</body>
+
+<script>
+        /*
+      fetchLatest: /api/generator/latest'den veri çeker ve sayfadaki alanları günceller.
+    */
+
+    (function() {
+        const API_URL = '/api/generator/latest';
+        const POLL_INTERVAL_MS = 1000;
+
+        const lowerFirst = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+        const upperFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+        function getField(obj, name) {
+            if (!obj) return undefined;
+            return obj[name] ?? obj[lowerFirst(name)] ?? obj[upperFirst(name)];
+        }
+
+        function fmtTimeStamp(ts) {
+            if (!ts) return '--:--:--';
+            const d = new Date(ts);
+            if (isNaN(d)) return String(ts);
+            return d.toLocaleString();
+        }
+
+        function secsToDHMS(totalSeconds) {
+            totalSeconds = Number(totalSeconds) || 0;
+            const days = Math.floor(totalSeconds / (3600*24));
+            const hours = Math.floor((totalSeconds % (3600*24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function panelByTitle(title) {
+            return Array.from(document.querySelectorAll('.panel'))
+                .find(p => p.querySelector('h3') && p.querySelector('h3').textContent.trim() === title);
+        }
+
+        function setPanelRow(panelEl, labelStartText, valueText) {
+            if (!panelEl) return;
+            Array.from(panelEl.querySelectorAll('.parameter-row')).forEach(row => {
+                const lbl = row.querySelector('.parameter-label');
+                const val = row.querySelector('.parameter-value');
+                if (!lbl || !val) return;
+                if (lbl.textContent.trim().startsWith(labelStartText)) {
+                    val.textContent = valueText;
+                }
+            });
+        }
+
+        function setSelectorText(selector, text) {
+            const el = document.querySelector(selector);
+            if (el) el.textContent = text;
+        }
+
+        function setStatusOnline(isOnline) {
+            document.querySelectorAll('.status-indicator').forEach(si => {
+                si.classList.toggle('status-online', isOnline);
+                si.classList.toggle('status-offline', !isOnline);
+            });
+            const updateEl = document.getElementById('dataUpdate');
+            if (updateEl) updateEl.textContent = isOnline ? 'Aktif' : 'Bağlantı Yok';
+        }
+
+        async function fetchLatest() {
+            try {
+                const res = await fetch(API_URL, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const json = await res.json();
+
+                setStatusOnline(true);
+
+                const f = name => getField(json, name);
+
+                setSelectorText('.power .stat-value', (f('GenUretilenGuc') ?? f('genUretilenGuc') ?? f('ToplamGuc') ?? '--') + ' kW');
+                setSelectorText('.rpm .stat-value', (f('MotorRpm') ?? f('motorRpm') ?? '--') + ' rpm');
+                setSelectorText('.fuel .stat-value', (f('YakitSeviyesi') ?? f('yakitSeviyesi') ?? '--') + ' %');
+                setSelectorText('.battery .stat-value', (f('BataryaVoltaji') ?? f('bataryaVoltaji') ?? '--') + ' V');
+
+                const ts = f('timestamp') ?? f('Timestamp') ?? f('time') ?? f('Time');
+                const lastUpdateEl = document.getElementById('lastUpdate');
+                if (lastUpdateEl) lastUpdateEl.textContent = fmtTimeStamp(ts);
+
+                const wifi = f('WifiSignal') ?? f('wifiSignal') ?? f('WifiSignalGucu') ?? f('wifiSignalGucu') ?? null;
+                if (wifi !== null) {
+                    const wifiEl = document.getElementById('wifiSignal');
+                    if (wifiEl) wifiEl.textContent = `${wifi}%`;
+                }
+
+                const ip = f('Esp32Ip') ?? f('esp32Ip') ?? f('Ip') ?? f('IpAddress') ?? null;
+                if (ip !== null) {
+                    const ipEl = document.getElementById('esp32Ip');
+                    if (ipEl) ipEl.textContent = ip;
+                }
+
+                const btnConnect = document.querySelector('.btn-connect');
+                if (btnConnect) btnConnect.textContent = `📡 ${ip ?? '—'}`;
+
+                const btnUpdate = document.querySelector('.btn-update');
+                if (btnUpdate) btnUpdate.textContent = `🔄 Son: ${new Date().toLocaleTimeString()}`;
+
+                const sebeke = panelByTitle('Şebeke');
+                if (sebeke) {
+                    setPanelRow(sebeke, 'L1 Voltaj:', (f('SebekeVoltaj_l1') ?? f('sebekeVoltaj_l1') ?? '--') + ' V');
+                    setPanelRow(sebeke, 'L2 Voltaj:', (f('SebekeVoltaj_l2') ?? '--') + ' V');
+                    setPanelRow(sebeke, 'L3 Voltaj:', (f('SebekeVoltaj_l3') ?? '--') + ' V');
+                    setPanelRow(sebeke, 'Frekans:', (f('SebekeHz') ?? '--') + ' Hz');
+                    setPanelRow(sebeke, 'Toplam Güç:', (f('ToplamGuc') ?? '--') + ' kW');
+                    setPanelRow(sebeke, 'Şebeke Durumu:', (f('SebekeDurumu') ?? '--'));
+                }
+
+                const jener = panelByTitle('Jeneratör');
+                if (jener) {
+                    setPanelRow(jener, 'L1 Voltaj:', (f('GenVoltaj_l1') ?? '--') + ' V');
+                    setPanelRow(jener, 'L2 Voltaj:', (f('GenVoltaj_l2') ?? '--') + ' V');
+                    setPanelRow(jener, 'L3 Voltaj:', (f('GenVoltaj_l3') ?? '--') + ' V');
+                    setPanelRow(jener, 'Frekans:', (f('GenHz') ?? '--') + ' Hz');
+                    setPanelRow(jener, 'Üretilen Güç:', (f('GenUretilenGuc') ?? '--') + ' kW');
+                    setPanelRow(jener, 'Güç Faktörü:', (f('GenGucFaktoru') ?? '--'));
+                }
+
+                const motor = panelByTitle('Motor Bilgileri');
+                if (motor) {
+                    setPanelRow(motor, 'Motor RPM:', (f('MotorRpm') ?? '--') + ' rpm');
+                    setPanelRow(motor, 'Motor Sıcaklık:', (f('MotorSicaklik') ?? '--') + ' °C');
+                    setPanelRow(motor, 'Yağ Basıncı:', (f('YagBasinci') ?? '--') + ' %');
+                    setPanelRow(motor, 'Yakıt Seviyesi:', (f('YakitSeviyesi') ?? '--') + ' %');
+                    setPanelRow(motor, 'Batarya Voltajı:', (f('BataryaVoltaji') ?? '--') + ' V');
+                }
+
+                const calisma = panelByTitle('Çalışma Durumu');
+                if (calisma) {
+                    setPanelRow(calisma, 'Çalışma Durumu:', (f('CalismaDurumu') ?? f('CalismaDurumu') ?? '--'));
+                    setPanelRow(calisma, '⏱️ Sistem Çalışma Süresi:', secsToDHMS(f('SistemCalismaSuresi') ?? f('sistemCalismaSuresi') ?? 0));
+                    setPanelRow(calisma, '⚙️ Operasyon Modu:', (f('OperationMode') ?? '--'));
+                }
+
+                console.debug('Latest data pulled', json);
+
+            } catch (err) {
+                console.warn('fetchLatest error', err);
+                setStatusOnline(false);
+                const lastUpdateEl = document.getElementById('lastUpdate');
+                if (lastUpdateEl) lastUpdateEl.textContent = '--:--:--';
+                const btnUpdate = document.querySelector('.btn-update');
+                if (btnUpdate) btnUpdate.textContent = `🔄 Hata`;
+            }
+        }
+
+        fetchLatest();
+        setInterval(fetchLatest, POLL_INTERVAL_MS);
+
+        // WebSocket ESP32 bağlantısı
+        const socket = new WebSocket("ws://10.82.134.157:81");
+
+        socket.onopen = () => console.log("✅ WebSocket bağlantısı başarılı.");
+        socket.onerror = (err) => console.error("❌ WebSocket hatası:", err);
+        socket.onmessage = (event) => console.log("📩 ESP'den gelen mesaj:", event.data);
+
+           async function sendCommand(cmd) {
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(cmd);
+            console.log("🛠️ Komut gönderildi:", cmd);
+
+        } else {
+            console.warn("⚠️ WebSocket bağlantısı açık değil.");
+        }
+
+        // Log kaydı oluştur
+        try {
+            const response = await fetch('/api/Generator/LogControlAction', {
+                method: 'POST',
+                // credentials: 'include', 
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cmd)
+            });
+
+            if (response.ok) {
+                console.log('✅ Log kaydı oluşturuldu.');
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Log kaydı oluşturulamadı.', errorText);
+            }
+        } catch (error) {
+            console.error('❌ Log isteği gönderilirken hata:', error);
+        }
+        }
+
+
+        document.getElementById("send_start").addEventListener("click", () => sendCommand("start"));
+        document.getElementById("send_stop").addEventListener("click", () => sendCommand("stop"));
+        document.getElementById("send_auto").addEventListener("click", () => sendCommand("auto"));
+        document.getElementById("send_manuel").addEventListener("click", () => sendCommand("manuel"));
+        document.getElementById("send_test").addEventListener("click", () => sendCommand("test"));
+        document.getElementById("send_acilstop").addEventListener("click", () => sendCommand("emergency"));
+
+    })(); // IIFE sonu
+
+</script>
